@@ -3,15 +3,15 @@ Apresentado no **5º semestre de Ciência da Computação** na **Universidade Pr
 
 ### Sumário
 **Parte I:**  
-[O que é Xeque]()  
-[O que é Notação de Forsyth]()  
+[O que é Xeque](o-que-é-xeque?)  
+[O que é Notação de Forsyth](o-que-é-notação-de-forsyth)  
 
 **Parte II:**  
-[Detalhes de Implementação]()  
-[Documentação]()  
+[Detalhes de Implementação](detalhes-de-implementação)  
+[Documentação](documentação)  
 
 **Parte III:**  
-[Referências]()
+[Referências](referências)
 
 ---
 
