@@ -3,15 +3,15 @@ Apresentado no **5º semestre de Ciência da Computação** na **Universidade Pr
 
 ### Sumário
 **Parte I:**  
-[O que é Xeque](o-que-é-xeque?)  
-[O que é Notação de Forsyth](o-que-é-notação-de-forsyth)  
+[O que é Xeque](#o_que_e_xeque)  
+[O que é Notação Forsyth](#o_que_e_notacao_forsyth)  
 
 **Parte II:**  
-[Detalhes de Implementação](detalhes-de-implementação)  
-[Documentação](documentação)  
+[Detalhes de Implementação](#detalhes_de_implementacao)  
+[Documentação](#documentacao)  
 
 **Parte III:**  
-[Referências](referências)
+[Referências](#referencias)
 
 ---
 
@@ -24,6 +24,7 @@ Apresentado no **5º semestre de Ciência da Computação** na **Universidade Pr
 </div>
 
 ### O que é Xeque?
+<a id="o_que_e_xeque"></a>
 Em partidas de xadrez, o xeque atua como um anúncio de perigo para algum dos reis no tabuleiro. Como um rei nunca pode ser capturado, o termo é utilizado para determinar que o rei está em ameaça e que o jogador que está em xeque deve mover o rei de modo que ele saia dessa posição.  
 <details>
   <summary><code><b>Exemplo</b></code></summary>
@@ -34,6 +35,7 @@ Em partidas de xadrez, o xeque atua como um anúncio de perigo para algum dos re
 </details>
 
 ### O que é Notação Forsyth
+<a id="o_que_e_notacao_forsyth"></a>
 Notação de Forsyth é um método utilizado para o registro da posição de uma peça em uma partida de xadrez, criado pelo jornalista escocês *David Forsyth*, tendo se tornado muito popular no século XIX.  
 A regra para o registro de uma **posição Forsyth** é começar a registrar a posição das peças da linha das pretas (linha 8) até a linha das brancas (linha 1), correndo da esquerda para a direita, como em uma leitura. As peças são anotadas pelas letras, como ‘R’ para o Rei, ‘D’ para a Dama, ‘B’ para o Bispo, ‘C’ para Cavalo, ‘T’ para Torre e ‘P’ para Peão. As peças brancas são anotadas com letras maiúsculas e as peças pretas com letras minúsculas. As casas vazias são anotadas apenas com um número, indicando quantas casas vazias estão “na corrida”. Por exemplo, uma linha sem peças é anotada como um número 8. Se temos três casas vazias, uma Torre branca e quatro casas vazias, a linha é anotada como 3T4. Diferentes linhas são anotadas com um traço ou barra entre elas. Assim, a posição inicial do jogo é anotada como: `tcbdrbct-pppppppp-8-8-8-8-PPPPPPPP-TCBDRBCT`.
 
@@ -50,10 +52,12 @@ A regra para o registro de uma **posição Forsyth** é começar a registrar a p
 </div>
 
 ### Detalhes de Implementação
+<a id="detalhes_de_implementacao"></a>
 > [!NOTE]
 > Os detalhes de implementação serão adicionados conforme a progressão do projeto.
 
 ### Documentação
+<a id="documentacao"></a>
 > [!NOTE]
 > Os detalhes da documentação serão adicionados conforme a progressão do projeto na seção **Wiki**.
 
@@ -70,6 +74,7 @@ A regra para o registro de uma **posição Forsyth** é começar a registrar a p
 </div>
 
 ### Referências
+<a id="referencias"></a>
 [Termos de Xadrez: Xeque](https://www.chess.com/pt-BR/terms/xeque-xadrez)  
 [Notação de Forsyth](https://pt.wikipedia.org/wiki/Nota%C3%A7%C3%A3o_Forsyth)
 
