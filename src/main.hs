@@ -9,12 +9,20 @@
 
 -- Verifica se o Rei Branco está em Xeque
 check_verificator :: [[Int]] -> Bool
-check_verificator _[[]] = False
-check_verificator chess_board = True
+check_verificator [[]] = False
+check_verificator board = True
 
--- Leitura da Notação de Forsyth em uma Matriz
-forsyth_mtrx :: [String] -> [[Int]]
-forsyth_mtrx _[] = []
-forsyth_mtrx forsyth_notation = [[1,2,3]]
+{- 
+ - Leitura da Notação de Forsyth em uma Matriz
+ - [String]: notação de forsyth
+ - [[Char]]: matriz 8x8 no formato de um tabuleiro de xadrez
+ -}
+chess_board :: [String] -> [[Char]]
+chess_board = map (concatMap forsyth_notation)
+     where 
+     forsyth_notation character
+       | character >= '1' && character <= '8' = replicate (read [character]) '.'
+       | otherwise = [character]
+         
 
 
