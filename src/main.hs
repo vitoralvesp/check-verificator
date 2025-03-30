@@ -1,14 +1,33 @@
 {- TODO 
- - Ler a Notação de Forsyth
-   - Formato da Entrada: [Peças Pretas, Peões das Peças Pretas, Linhas entre as Peças, Peões das Peças Brancas, Peças Brancas]
- - Realizar a leitura da notação e converter em uma matriz 8 x 8
- Opção 1:
- -Identificando as peças pretas no tabuleiro
- -Vendo se alguma ameaça o rei
- Opção 2:
- - Identificar a posição do rei branco na matriz
- - Verificar se alguma peça preta pode atacá-lo
- - Retornar True se alguma peça pode atacá-lo, ou False caso contrário
+
+Peças = torre; cavalo; bispo; dama; rei; peão
+
+Algoritmo:
+- Procura peças pretas e retorna posição por linha
+- Faz trajetos possíveis
+- Verifica se alguma alcança rei branco
+verificaCheque = verificaTorre || verificaCavalo || verificaBispo || verificaDama || verificaReiPreto || verificaPeão
+	Se um for verdadeiro (se um já colocar em xeque), o programa retorna verdadeiro. Caso contrário (nenhum xeque), retorna falso
+
+Separar tarefas:
+	Lucas: Torre
+	Vitor: Bispo
+	Jéssica: Peão
+
+Casos base: peão, torre e bispo
+
+Dama = Bispo + Torre
+Rei = peão + Bispo
+Cavalo = 8 movimentos:
+      L cima/direita
+      L cima/esquerda
+      L direita/cima
+      L direita/baixo
+      L baixo/direita
+      L baixo/esquerda
+      L esquerda/cima
+      L esquerda/baixo 
+
  -}
 
 -- Verifica se o Rei Branco está em Xeque
@@ -31,9 +50,8 @@ chess_board = map (concatMap forsyth_notation)
 charParaInt :: Char -> Int
 charParaInt c = read [c] :: Int
 
-
 procura_peca :: Char -> [Char] -> Int
-procura_peca peca_procurada  lst= procura peca_procurada 0 lst
+procura_peca peca_procurada lst= procura peca_procurada 0 lst
 
 
 procura :: Char -> Int -> [Char] -> Int
