@@ -2,6 +2,10 @@
  - Ler a Notação de Forsyth
    - Formato da Entrada: [Peças Pretas, Peões das Peças Pretas, Linhas entre as Peças, Peões das Peças Brancas, Peças Brancas]
  - Realizar a leitura da notação e converter em uma matriz 8 x 8
+ Opção 1:
+ -Identificando as peças pretas no tabuleiro
+ -Vendo se alguma ameaça o rei
+ Opção 2:
  - Identificar a posição do rei branco na matriz
  - Verificar se alguma peça preta pode atacá-lo
  - Retornar True se alguma peça pode atacá-lo, ou False caso contrário
@@ -28,11 +32,15 @@ charParaInt :: Char -> Int
 charParaInt c = read [c] :: Int
 
 
-procura_peca :: Char -> String -> Int
-procura_peca peca_procurada lst = procura peca_procurada 0 lst
+procura_peca :: Char -> [Char] -> Int
+procura_peca peca_procurada  lst= procura peca_procurada 0 lst
 
 
-procura :: Char -> Int -> String -> Int
+procura :: Char -> Int -> [Char] -> Int
+procura _ _ [] = -1
+procura peca_procurada pos [elemento]
+        | elemento == peca_procurada = pos
+        | otherwise = -1
 procura peca_procurada pos (elemento:(prox_elemento:resto))
         | elemento == peca_procurada = pos
         | elemento >= '1' && elemento <= '8' = procura peca_procurada (pos+ (charParaInt elemento)) (prox_elemento:resto) 
