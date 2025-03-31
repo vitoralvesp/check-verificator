@@ -64,22 +64,40 @@ procura peca_procurada pos (elemento:(prox_elemento:resto))
         | elemento >= '1' && elemento <= '8' = procura peca_procurada (pos+ (charParaInt elemento)) (prox_elemento:resto) 
         | otherwise = procura peca_procurada (pos+1) (prox_elemento:resto)
 
+-- Verifica a linha da torre
+verifica_torre_linha :: String -> Bool
+verifica_torre_linha [] = False
+verifica_torre_linha (a:xs) = verifica_torre_linha_aux 0 pos_torre posicao_rei (a:xs)
+        where 
+                posicao_rei = procura_peca 'R' (a:xs)
+                pos_torre = procura_peca 't' (a:xs)
 
+verifica_torre_linha_aux :: Int -> Int -> Int -> String -> Bool
+verifica_torre_linha_aux _ _ _ [] = False
+verifica_torre_linha_aux ac pos_torre pos_rei (a:xs)
+        | pos_rei == -1 = False
+        | (a >= '1' && a <= '8') && (((pos_rei + (charParaInt a)+1) == pos_torre) || ((pos_rei - (charParaInt a)+1) == pos_torre))= True
+        | a >= '1' && a <= '8' = verifica_torre_linha_aux (ac + (charParaInt a)) pos_torre pos_rei xs
+        | ((ac > pos_torre && ac < pos_rei) || (ac > pos_rei && ac < pos_torre))= False 
+        | (a == 'R' && pos_rei > pos_torre) || (pos_rei == pos_torre+1) || (pos_rei == pos_torre-1) = True
+        | otherwise = verifica_torre_linha_aux (ac+1) pos_torre pos_rei xs
+
+-- Verifica a coluna da torre
+
+{-
+        FIXME: se houver peça na coluna da torre entre a torre e o rei, deve retornar falso, não verdadeiro.
+-}
 verifica_torre_coluna :: Int -> [String] -> Bool
 verifica_torre_coluna _ [] = False
-verifica_torre_coluna pos_torre [a] = verifica_torre_linha pos_torre a
-verifica_torre_coluna pos_torre (a:xs) = verifica_torre_linha pos_torre a || verifica_torre_coluna pos_torre xs
+verifica_torre_coluna pos_torre (a:xs) = verifica_torre_coluna_prox_linhas pos_torre a || verifica_torre_coluna pos_torre xs
 
-verifica_torre_linha :: Int -> String -> Bool
-verifica_torre_linha pos_torre lst = verifica_torre_lin  0 pos_torre lst
+verifica_torre_coluna_prox_linhas :: Int -> String -> Bool
+verifica_torre_coluna_prox_linhas pos_torre lst = verifica_torre_coluna_prox_linhas_aux 0 pos_torre lst
 
-verifica_torre_lin :: Int -> Int -> String -> Bool
-verifica_torre_lin _ _ [] = False
-verfica_torre_lin ac pos_torre [a]
-        | ac == pos_torre = (a == 'R')
-        | otherwise = False
-verifica_torre ac pos_torre (a:xs)
-        | ac == pos_torre = (a == 'R')
-        | ac > pos_torre = False
-        | a >= '1' && a <='8' = verifica_torre_lin (ac+(charParaInt a)) pos_torre xs
-        | otherwise = verifica_torre_lin (ac+1) pos_torre xs
+verifica_torre_coluna_prox_linhas_aux :: Int -> Int -> String -> Bool
+verifica_torre_coluna_prox_linhas_aux _ _ [] = False  
+verifica_torre_coluna_prox_linhas_aux ac pos_torre (a:xs)
+    | ac == pos_torre = (a == 'R')
+    | ac > pos_torre = False  
+    | a >= '1' && a <= '8' = verifica_torre_coluna_prox_linhas_aux (ac + (charParaInt a)+1) pos_torre xs  
+    | otherwise = verifica_torre_coluna_prox_linhas_aux (ac + 1) pos_torre xs
