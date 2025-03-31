@@ -68,16 +68,18 @@ procura peca_procurada pos (elemento:(prox_elemento:resto))
 verifica_torre_coluna :: Int -> [String] -> Bool
 verifica_torre_coluna _ [] = False
 verifica_torre_coluna pos_torre [a] = verifica_torre_linha pos_torre a
-verifica_torre_coluna pos_torre (a:xs) = verifica_torre_linha pos_torre a && verifica_torre_coluna pos_torre xs
+verifica_torre_coluna pos_torre (a:xs) = verifica_torre_linha pos_torre a || verifica_torre_coluna pos_torre xs
 
-verifica_torre_linha :: Int -> [Char] -> Bool
+verifica_torre_linha :: Int -> String -> Bool
 verifica_torre_linha pos_torre lst = verifica_torre_lin  0 pos_torre lst
 
-verifica_torre_lin :: Int -> Int -> [Char]
+verifica_torre_lin :: Int -> Int -> String -> Bool
 verifica_torre_lin _ _ [] = False
+verfica_torre_lin ac pos_torre [a]
+        | ac == pos_torre = (a == 'R')
+        | otherwise = False
 verifica_torre ac pos_torre (a:xs)
         | ac == pos_torre = (a == 'R')
         | ac > pos_torre = False
-        | a >= '1' && a <='8' = verifica_torre_lin (ac+a) pos_torre xs
+        | a >= '1' && a <='8' = verifica_torre_lin (ac+(charParaInt a)) pos_torre xs
         | otherwise = verifica_torre_lin (ac+1) pos_torre xs
-
