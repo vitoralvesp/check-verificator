@@ -52,6 +52,33 @@ movimento_horizontal_para_a_esquerda (x, y) capacidade_de_movimento contador_de_
                   | tabuleiro !! y !! x /= '.' && contador_de_movimento > 0 = False
                   | otherwise = movimento_horizontal_para_a_esquerda (x - 1, y) capacidade_de_movimento (contador_de_movimento+1) tabuleiro
 
+movimento_na_diagonal_principal_cima :: (Int, Int) -> [[Char]] -> Bool
+movimento_na_diagonal_principal_cima (x, y) tabuleiro
+                  | x < 0 || y < 0 = False
+                  | tabuleiro !! y !! x == 'R' = True
+                  | tabuleiro !! y !! x /= '.' = False
+                  | otherwise = movimento_na_diagonal_principal_cima (x - 1, y - 1) tabuleiro
+
+movimento_na_diagonal_principal_baixo :: (Int, Int) -> [[Char]] -> Bool
+movimento_na_diagonal_principal_baixo (x, y) tabuleiro
+                  | x > 7 || y > 7 = False
+                  | tabuleiro !! y !! x == 'R' = True
+                  | tabuleiro !! y !! x /= '.' = False
+                  | otherwise = movimento_na_diagonal_principal_baixo (x + 1, y + 1) tabuleiro
+
+movimento_na_diagonal_secundaria_cima :: (Int, Int) -> [[Char]] -> Bool
+movimento_na_diagonal_secundaria_cima (x, y) tabuleiro
+                  | x > 7 || y < 0 = False
+                  | tabuleiro !! y !! x == 'R' = True
+                  | tabuleiro !! y !! x /= '.' = False
+                  | otherwise = movimento_na_diagonal_secundaria_cima (x + 1, y - 1) tabuleiro
+
+movimento_na_diagonal_secundaria_baixo :: (Int, Int) -> [[Char]] -> Bool
+movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro
+                  | x < 0 || y > 7 = False
+                  | tabuleiro !! y !! x == 'R' = True
+                  | tabuleiro !! y !! x /= '.' = False
+                  | otherwise = movimento_na_diagonal_secundaria_baixo (x - 1, y + 1) tabuleiro
 
 -- Peças
 torre :: (Char, (Int, Int)) -> [[Char]] -> Bool
@@ -63,10 +90,20 @@ torre (peca, (x, y)) tabuleiro
       | otherwise = False
 
 cavalo :: (Char, (Int, Int)) -> Bool
-cavalo (peca, (x, y)) = False  
+cavalo (peca, (x, y)) = False
 
-bispo :: (Char, (Int, Int)) -> Bool
-bispo (peca, (x, y)) = False  
+bispo :: (Char, (Int, Int)) -> [[Char]] -> Bool
+bispo (peca, (x, y)) tabuleiro
+      | x == 0 && y == 0 = movimento_na_diagonal_principal_baixo (x, y) tabuleiro || 
+                          movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro
+      | x == 0 = movimento_na_diagonal_principal_baixo (x, y) tabuleiro 
+                 || movimento_na_diagonal_secundaria_cima (x, y) tabuleiro
+      | y == 0 = movimento_na_diagonal_principal_baixo (x, y) tabuleiro 
+                 || movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro
+      | otherwise = movimento_na_diagonal_principal_cima (x, y) tabuleiro 
+                    || movimento_na_diagonal_principal_baixo (x, y) tabuleiro 
+                    || movimento_na_diagonal_secundaria_cima (x, y) tabuleiro 
+                    || movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro
 
 rainha :: (Char, (Int, Int)) -> Bool
 rainha (peca, (x, y)) = False  
@@ -85,6 +122,7 @@ esta_em_xeque_aux :: [(Char, (Int, Int))] -> [[Char]] -> Bool
 esta_em_xeque_aux [] _ = False
 esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
   | peca == 't' = torre (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+  | peca == 'b' = bispo (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | otherwise = esta_em_xeque_aux restante tabuleiro
 
 {-
@@ -103,10 +141,10 @@ esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
 main :: IO()
 main = do
   putStr "\nTabuleiro interpretado da Notação Forsyth: "
-  print (criar_tabuleiro ["tcbdrbct","pppppppp","8","t7R","8","8","PPPPPPPP","TCBDRBCT"])
+  print (criar_tabuleiro ["tcbdrbct","pRpppppp","8","8","8","8","PPPPPPPP","TCBDRBCT"])
   
   putStr "\nSeleção das Peças: "
-  print (selecionar_pecas ["tcbdrbct","pppppppp","........","t......R","........","........","PPPPPPPP","TCBDRBCT"])
+  print (selecionar_pecas ["tcbdrbct","pRpppppp","........","t......R","........","........","PPPPPPPP","TCBDRBCT"])
   
   putStr "\nEstá em Xeque? "
-  print (esta_em_xeque ["tcbdrbct","pppppppp","8","8","8","8","PPPPPPPP","TCBDRBCT"])
+  print (esta_em_xeque ["tcbdrbct","pRpppppp","8","8","8","8","PPPPPPPP","TCBDRBCT"])
