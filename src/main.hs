@@ -133,7 +133,6 @@ peao (peca, (x, y)) tabuleiro
  | otherwise = verifica_diagonal_esquerda_baixo (x, y) tabuleiro || 
                 verifica_diagonal_direita_baixo (x, y) tabuleiro
 
--- peao (peca, (x, y)) = False  
 
 -- Verifica se o Rei Branco está em xeque
 esta_em_xeque :: [String] -> Bool
@@ -170,15 +169,3 @@ main = do
   
   putStr "\nEstá em Xeque? "
   print (esta_em_xeque ["tcbdrbct","pRpppppp","8","8","8","8","PPPPPPPP","TCBDRBCT"])
-
- -- Teste específico para peão
-  putStr "\nPeão dando xeque? "
-  let tabuleiro_peao = criar_tabuleiro ["8","8","8","..p.....","...R....","8","8","8"]
-  let peao_posicao = ('p', (2, 3))
-  print (peao peao_posicao tabuleiro_peao)
-  
-  -- Outro teste para peão
-  putStr "\nPeão não dando xeque? "
-  let tabuleiro_sem_xeque = criar_tabuleiro ["8","8","8","..p.....","..R.....","8","8","8"]
-  let peao_posicao2 = ('p', (2, 3))
-  print (peao peao_posicao2 tabuleiro_sem_xeque)
