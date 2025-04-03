@@ -80,6 +80,18 @@ movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro
                   | tabuleiro !! y !! x /= '.' = False
                   | otherwise = movimento_na_diagonal_secundaria_baixo (x - 1, y + 1) tabuleiro
 
+verifica_diagonal_esquerda_baixo :: (Int, Int) -> [[Char]] -> Bool
+verifica_diagonal_esquerda_baixo (x, y) tabuleiro
+      | x - 1 < 0 || y + 1 > 7 = False  
+      | tabuleiro !! (y + 1) !! (x - 1) == 'R' = True  
+      | otherwise = False
+
+verifica_diagonal_direita_baixo :: (Int, Int) -> [[Char]] -> Bool
+verifica_diagonal_direita_baixo (x, y) tabuleiro
+      | x + 1 > 7 || y + 1 > 7 = False 
+      | tabuleiro !! (y + 1) !! (x + 1) == 'R' = True 
+      | otherwise = False
+
 -- Peças
 torre :: (Char, (Int, Int)) -> [[Char]] -> Bool
 torre (peca, (x, y)) tabuleiro
@@ -111,8 +123,17 @@ rainha (peca, (x, y)) = False
 rei :: (Char, (Int, Int)) -> Bool
 rei (peca, (x, y)) = False  
 
-peao :: (Char, (Int, Int)) -> Bool
-peao (peca, (x, y)) = False  
+peao :: (Char, (Int, Int)) -> [[Char]] -> Bool
+peao (peca, (x, y)) tabuleiro 
+ | x == 0 && y == 7 = False  
+ | x == 7 && y == 7 = False  
+ | x == 0 = verifica_diagonal_direita_baixo (x, y) tabuleiro  
+ | x == 7 = verifica_diagonal_esquerda_baixo (x, y) tabuleiro 
+ | y == 7 = False
+ | otherwise = verifica_diagonal_esquerda_baixo (x, y) tabuleiro || 
+                verifica_diagonal_direita_baixo (x, y) tabuleiro
+
+-- peao (peca, (x, y)) = False  
 
 -- Verifica se o Rei Branco está em xeque
 esta_em_xeque :: [String] -> Bool
@@ -123,20 +144,21 @@ esta_em_xeque_aux [] _ = False
 esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
   | peca == 't' = torre (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'b' = bispo (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+  | peca == 'p' = peao (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | otherwise = esta_em_xeque_aux restante tabuleiro
 
-{-
-esta_em_xeque_aux :: [(Char, (Int, Int))] -> [[Char]] -> Bool
-esta_em_xeque_aux [] _ = False
-esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
-  | peca == 't' = torre (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
-  | peca == 'c' = cavalo (peca, (x, y)) || esta_em_xeque_aux restante tabuleiro
-  | peca == 'b' = bispo (peca, (x, y)) || esta_em_xeque_aux restante tabuleiro
-  | peca == 'd' = rainha (peca, (x, y)) || esta_em_xeque_aux restante tabuleiro
-  | peca == 'r' = rei (peca, (x, y)) || esta_em_xeque_aux restante tabuleiro
-  | peca == 'p' = peao (peca, (x, y)) || esta_em_xeque_aux restante tabuleiro
-  | otherwise = esta_em_xeque_aux restante tabuleiro
--}
+
+-- esta_em_xeque_aux :: [(Char, (Int, Int))] -> [[Char]] -> Bool
+-- esta_em_xeque_aux [] _ = False
+-- esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
+--   | peca == 't' = torre (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+--   | peca == 'c' = cavalo (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+--   | peca == 'b' = bispo (peca, (x, y)) tabuleiro|| esta_em_xeque_aux restante tabuleiro
+--   | peca == 'd' = rainha (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+--   | peca == 'r' = rei (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+--   | peca == 'p' = peao (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+--   | otherwise = esta_em_xeque_aux restante tabuleiro
+
 --
 main :: IO()
 main = do
@@ -148,3 +170,15 @@ main = do
   
   putStr "\nEstá em Xeque? "
   print (esta_em_xeque ["tcbdrbct","pRpppppp","8","8","8","8","PPPPPPPP","TCBDRBCT"])
+
+ -- Teste específico para peão
+  putStr "\nPeão dando xeque? "
+  let tabuleiro_peao = criar_tabuleiro ["8","8","8","..p.....","...R....","8","8","8"]
+  let peao_posicao = ('p', (2, 3))
+  print (peao peao_posicao tabuleiro_peao)
+  
+  -- Outro teste para peão
+  putStr "\nPeão não dando xeque? "
+  let tabuleiro_sem_xeque = criar_tabuleiro ["8","8","8","..p.....","..R.....","8","8","8"]
+  let peao_posicao2 = ('p', (2, 3))
+  print (peao peao_posicao2 tabuleiro_sem_xeque)
