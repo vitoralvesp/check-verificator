@@ -1,4 +1,8 @@
 -- Interpreta a notação de forsyth em uma matriz que representa o tabuleiro de xadrez
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use camelCase" #-}
+{-# HLINT ignore "Use isAsciiLower" #-}
+{-# HLINT ignore "Use head" #-}
 criar_tabuleiro :: [String] -> [[Char]]
 criar_tabuleiro = map (concatMap notacao_de_forsyth)
   where
@@ -65,14 +69,14 @@ movimento_na_diagonal_principal_cima (x, y) tabuleiro
 
 movimento_na_diagonal_principal_baixo :: (Int, Int) -> [[Char]] -> Bool
 movimento_na_diagonal_principal_baixo (x, y) tabuleiro 
-                  | x > 7 || y > 7 = False
+                  | x >= 7 || y >= 7 = False
                   | tabuleiro !! (y + 1) !! (x + 1) == 'R' = True
                   | tabuleiro !! (y + 1) !! (x + 1) /= '.' = False
                   | otherwise = movimento_na_diagonal_principal_baixo (x + 1, y + 1) tabuleiro
 
 movimento_na_diagonal_secundaria_cima :: (Int, Int) -> [[Char]] -> Bool
 movimento_na_diagonal_secundaria_cima (x, y) tabuleiro
-                  | x > 7 || y < 0 = False
+                  | x >= 7 || y <= 0 = False
                   | (y == 0) && tabuleiro !! 0 !! (x + 1) == 'R' = True
                   | (y == 0) && tabuleiro !! 0 !! (x + 1) /= '.' = False
                   | (y > 0) && tabuleiro !! (y - 1) !! (x + 1) == 'R' = True
@@ -91,8 +95,8 @@ movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro
 -- Peças
 torre :: (Char, (Int, Int)) -> [[Char]] -> Bool
 torre (peca, (x, y)) tabuleiro
-      | movimento_vertical_para_baixo (x, y) 7 0 tabuleiro 
-      || movimento_vertical_para_cima (x, y) 7 7 tabuleiro 
+      | movimento_vertical_para_cima (x, y) 7 7 tabuleiro 
+      || movimento_vertical_para_baixo (x, y) 7 0 tabuleiro 
       || movimento_horizontal_para_a_direita (x, y) 7 0 tabuleiro 
       || movimento_horizontal_para_a_esquerda (x, y) 7 7 tabuleiro = True
       | otherwise = False
@@ -108,8 +112,18 @@ bispo (peca, (x, y)) tabuleiro
       || movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro = True
       | otherwise = False
 
-rainha :: (Char, (Int, Int)) -> Bool
-rainha (peca, (x, y)) = False  
+rainha :: (Char, (Int, Int)) -> [[Char]] -> Bool
+rainha (peca, (x, y)) tabuleiro
+      | movimento_vertical_para_cima (x, y) 7 7 tabuleiro 
+      || movimento_vertical_para_baixo (x, y) 7 0 tabuleiro 
+      || movimento_horizontal_para_a_direita (x, y) 7 0 tabuleiro 
+      || movimento_horizontal_para_a_esquerda (x, y) 7 7 tabuleiro
+      || movimento_na_diagonal_principal_cima (x, y) tabuleiro
+      || movimento_na_diagonal_secundaria_cima (x, y) tabuleiro
+      || movimento_na_diagonal_principal_baixo (x, y) tabuleiro
+      || movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro = True
+      | otherwise = False
+
 
 rei :: (Char, (Int, Int)) -> Bool
 rei (peca, (x, y)) = False  
@@ -126,6 +140,7 @@ esta_em_xeque_aux [] _ = False
 esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
   | peca == 't' = torre (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'b' = bispo (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+  | peca == 'd' = rainha (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | otherwise = esta_em_xeque_aux restante tabuleiro
 
 {-
@@ -143,11 +158,13 @@ esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
 --
 main :: IO()
 main = do
-  putStr "\nTabuleiro interpretado da Notacao Forsyth: "
-  print (criar_tabuleiro ["tcbdrbct","pppppppp","8","8","8","8","PPPPPPP","TCBDRBCT"])
+  putStr "\nTabuleiro interpretado da Notacao Forsyth:\n"
+  -- print (criar_tabuleiro ["1111r111","pppRpppp","8","8","8","8","PPPPPPP","TCBDRBCT"])
+
+  mapM_ print ["........",".pp....d",".....R..","........","........","........","PPPPPPPP","TCBDRBCT"]
   
   putStr "\nSelecao das Pecas: "
-  print (selecionar_pecas ["tcbdrbct",".ppppppp","R.......","........","........",".b.....","PPPPPPPP","TCBDRBCT"])
+  print (selecionar_pecas ["........",".pp....d",".....R..","........","........","........","PPPPPPPP","TCBDRBCT"])
   
   putStr "\nEsta em Xeque? "
-  print (esta_em_xeque ["1cbdrbct","p1pppppp","8","8","8","8","PPPPPPP","TCBDRBCT"])
+  print (esta_em_xeque ["11111111","1pp1111d","5R2","8","8","8","PPPPPPPP","TCBDRBCT"])
