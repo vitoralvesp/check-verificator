@@ -92,6 +92,18 @@ movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro
                   | (x > 0) && tabuleiro !! (y + 1) !! (x - 1) /= '.' = False
                   | otherwise = movimento_na_diagonal_secundaria_baixo (x - 1, y + 1) tabuleiro
 
+verifica_diagonal_esquerda_baixo :: (Int, Int) -> [[Char]] -> Bool
+verifica_diagonal_esquerda_baixo (x, y) tabuleiro
+                  | x - 1 < 0 || y + 1 > 7 = False  
+                  | tabuleiro !! (y + 1) !! (x - 1) == 'R' = True  
+                  | otherwise = False
+                  
+verifica_diagonal_direita_baixo :: (Int, Int) -> [[Char]] -> Bool
+verifica_diagonal_direita_baixo (x, y) tabuleiro
+                  | x + 1 > 7 || y + 1 > 7 = False 
+                  | tabuleiro !! (y + 1) !! (x + 1) == 'R' = True 
+                  | otherwise = False
+
 -- Peças
 torre :: (Char, (Int, Int)) -> [[Char]] -> Bool
 torre (peca, (x, y)) tabuleiro
@@ -124,12 +136,18 @@ rainha (peca, (x, y)) tabuleiro
       || movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro = True
       | otherwise = False
 
-
 rei :: (Char, (Int, Int)) -> Bool
 rei (peca, (x, y)) = False  
 
-peao :: (Char, (Int, Int)) -> Bool
-peao (peca, (x, y)) = False  
+peao :: (Char, (Int, Int)) -> [[Char]] -> Bool
+peao (peca, (x, y)) tabuleiro 
+     | x == 0 && y == 7 = False  
+     | x == 7 && y == 7 = False  
+     | x == 0 = verifica_diagonal_direita_baixo (x, y) tabuleiro  
+     | x == 7 = verifica_diagonal_esquerda_baixo (x, y) tabuleiro 
+     | y == 7 = False
+     | otherwise = verifica_diagonal_esquerda_baixo (x, y) tabuleiro 
+                   || verifica_diagonal_direita_baixo (x, y) tabuleiro
 
 -- Verifica se o Rei Branco está em xeque
 esta_em_xeque :: [String] -> Bool
@@ -141,6 +159,7 @@ esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
   | peca == 't' = torre (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'b' = bispo (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'd' = rainha (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+  | peca == 'p' = peao (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | otherwise = esta_em_xeque_aux restante tabuleiro
 
 {-
@@ -161,10 +180,10 @@ main = do
   putStr "\nTabuleiro interpretado da Notacao Forsyth:\n"
   -- print (criar_tabuleiro ["1111r111","pppRpppp","8","8","8","8","PPPPPPP","TCBDRBCT"])
 
-  mapM_ print ["........",".pp....d",".....R..","........","........","........","PPPPPPPP","TCBDRBCT"]
+  mapM_ print ["tcbdrbct","pppppppp","...R....",".......","........","........","PPPPPPPP","TCBDRBCT"]
   
   putStr "\nSelecao das Pecas: "
-  print (selecionar_pecas ["........",".pp....d",".....R..","........","........","........","PPPPPPPP","TCBDRBCT"])
+  print (selecionar_pecas ["tcbdrbct","pppppppp","R.......","........","........","........","PPPPPPPP","TCBDRBCT"])
   
   putStr "\nEsta em Xeque? "
-  print (esta_em_xeque ["11111111","1pp1111d","5R2","8","8","8","PPPPPPPP","TCBDRBCT"])
+  print (esta_em_xeque ["tcbdrbct","pppppppp","2p5","1R6","8","8","PPPPPPPP","TCBDRBCT"])
