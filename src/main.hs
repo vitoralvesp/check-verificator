@@ -141,11 +141,9 @@ rei (peca, (x, y)) = False
 
 peao :: (Char, (Int, Int)) -> [[Char]] -> Bool
 peao (peca, (x, y)) tabuleiro 
-     | x == 0 && y == 7 = False  
-     | x == 7 && y == 7 = False  
+     | (x == 0 && y == 7) || (x == 7 && y == 7) || (y == 7) = False  
      | x == 0 = verifica_diagonal_direita_baixo (x, y) tabuleiro  
      | x == 7 = verifica_diagonal_esquerda_baixo (x, y) tabuleiro 
-     | y == 7 = False
      | otherwise = verifica_diagonal_esquerda_baixo (x, y) tabuleiro 
                    || verifica_diagonal_direita_baixo (x, y) tabuleiro
 
