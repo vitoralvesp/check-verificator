@@ -29,68 +29,77 @@ selecionar_peca_linha (peca:restante) y x resultado
 
 -- Movimentos
 movimento_vertical_para_baixo :: (Int, Int) -> Int -> Int -> [[Char]] -> Bool
-movimento_vertical_para_baixo (x, y) capacidade_de_movimento contador_de_movimento tabuleiro
-                  | y > capacidade_de_movimento = False
-                  | tabuleiro !! y !! x == 'R' = True
-                  | tabuleiro !! y !! x /= '.' && contador_de_movimento > 0 = False
-                  | otherwise = movimento_vertical_para_baixo (x, y + 1) capacidade_de_movimento (contador_de_movimento+1) tabuleiro
+movimento_vertical_para_baixo (x, y) contador_de_movimento capacidade_de_movimento_em_y tabuleiro
+                  | (y >= 7) || (contador_de_movimento >= capacidade_de_movimento_em_y) = False
+                  | tabuleiro !! (y + 1) !! x == 'R' = True
+                  | tabuleiro !! (y + 1) !! x /= '.' = False
+                  | otherwise = movimento_vertical_para_baixo (x, y + 1) (contador_de_movimento + 1) capacidade_de_movimento_em_y tabuleiro
 
 movimento_vertical_para_cima :: (Int, Int) -> Int -> Int -> [[Char]] -> Bool
-movimento_vertical_para_cima (x, y) capacidade_de_movimento contador_de_movimento tabuleiro
-                  | y < 0 = False
-                  | tabuleiro !! y !! x == 'R' = True
-                  | tabuleiro !! y !! x /= '.' && contador_de_movimento > 0 = False
-                  | otherwise = movimento_vertical_para_cima (x, y - 1) capacidade_de_movimento (contador_de_movimento+1) tabuleiro
+movimento_vertical_para_cima (x, y) contador_de_movimento capacidade_de_movimento_em_y tabuleiro
+                  | (y <= 0) || (contador_de_movimento >= capacidade_de_movimento_em_y) = False
+                  | tabuleiro !! (y - 1) !! x == 'R' = True
+                  | tabuleiro !! (y - 1) !! x /= '.' = False
+                  | otherwise = movimento_vertical_para_cima (x, y - 1) (contador_de_movimento + 1) capacidade_de_movimento_em_y tabuleiro
 
+-- 0 1
 movimento_horizontal_para_a_direita :: (Int, Int) -> Int -> Int -> [[Char]] -> Bool
-movimento_horizontal_para_a_direita (x, y) capacidade_de_movimento contador_de_movimento tabuleiro
-                  | x > capacidade_de_movimento = False
-                  | tabuleiro !! y !! x == 'R' = True
-                  | tabuleiro !! y !! x /= '.' && contador_de_movimento > 0 = False
-                  | otherwise = movimento_horizontal_para_a_direita (x + 1, y) capacidade_de_movimento (contador_de_movimento+1) tabuleiro
+movimento_horizontal_para_a_direita (x, y) contador_de_movimento capacidade_de_movimento_para_a_direita tabuleiro
+                  | (x >= 7) || (contador_de_movimento >= capacidade_de_movimento_para_a_direita) = False
+                  | tabuleiro !! y !! (x + 1) == 'R' = True
+                  | tabuleiro !! y !! (x + 1) /= '.' = False
+                  | otherwise = movimento_horizontal_para_a_direita (x + 1, y) (contador_de_movimento + 1) capacidade_de_movimento_para_a_direita tabuleiro
 
 movimento_horizontal_para_a_esquerda :: (Int, Int) -> Int -> Int -> [[Char]] -> Bool
-movimento_horizontal_para_a_esquerda (x, y) capacidade_de_movimento contador_de_movimento tabuleiro
-                  | x < 0 = False
-                  | tabuleiro !! y !! x == 'R' = True
-                  | tabuleiro !! y !! x /= '.' && contador_de_movimento > 0 = False
-                  | otherwise = movimento_horizontal_para_a_esquerda (x - 1, y) capacidade_de_movimento (contador_de_movimento+1) tabuleiro
+movimento_horizontal_para_a_esquerda (x, y) contador_de_movimento capacidade_de_movimento_para_a_esquerda tabuleiro
+                  | (x <= 0) || (contador_de_movimento >= capacidade_de_movimento_para_a_esquerda) = False
+                  | tabuleiro !! y !! (x - 1) == 'R' = True
+                  | tabuleiro !! y !! (x - 1) /= '.' = False
+                  | otherwise = movimento_horizontal_para_a_esquerda (x - 1, y) (contador_de_movimento + 1) capacidade_de_movimento_para_a_esquerda tabuleiro
 
 -- se for zero, acessar como tabuleiro 0 0
 -- caso contrario, acessar como tabuleiro y x
-movimento_na_diagonal_principal_cima :: (Int, Int) -> [[Char]] -> Bool
-movimento_na_diagonal_principal_cima (x, y) tabuleiro
-                  | x < 0 || y < 0 = False
+movimento_na_diagonal_principal_cima :: (Int, Int) -> Int -> Int -> Int -> Int -> [[Char]] -> Bool
+movimento_na_diagonal_principal_cima (x, y) contador_de_movimento_para_a_direita contador_de_movimento_para_a_esquerda capacidade_de_movimento_para_a_direita capacidade_de_movimento_para_a_esquerda tabuleiro
+                  | (x < 0) || (y < 0) 
+                  || (contador_de_movimento_para_a_direita >= capacidade_de_movimento_para_a_direita) 
+                  || (contador_de_movimento_para_a_esquerda >= capacidade_de_movimento_para_a_esquerda) = False
                   | (x == 0 && y == 0) && tabuleiro !! 0 !! 0 == 'R' = True
                   | (x == 0 && y == 0) && tabuleiro !! 0 !! 0 /= '.' = False
                   | (x > 0 && y > 0) && tabuleiro !! (y - 1) !! (x - 1) == 'R' = True
                   | (x > 0 && y > 0) && tabuleiro !! (y - 1) !! (x - 1) /= '.' = False
-                  | otherwise = movimento_na_diagonal_principal_cima (x - 1, y - 1) tabuleiro
+                  | otherwise = movimento_na_diagonal_principal_cima (x - 1, y - 1) (contador_de_movimento_para_a_direita + 1) (contador_de_movimento_para_a_esquerda + 1) capacidade_de_movimento_para_a_direita capacidade_de_movimento_para_a_esquerda tabuleiro
 
-movimento_na_diagonal_principal_baixo :: (Int, Int) -> [[Char]] -> Bool
-movimento_na_diagonal_principal_baixo (x, y) tabuleiro 
-                  | x >= 7 || y >= 7 = False
+movimento_na_diagonal_principal_baixo :: (Int, Int) -> Int -> Int -> Int -> Int -> [[Char]] -> Bool
+movimento_na_diagonal_principal_baixo (x, y) contador_de_movimento_para_a_direita contador_de_movimento_para_baixo capacidade_de_movimento_para_a_direita capacidade_de_movimento_para_baixo tabuleiro
+                  | (x >= 7) || (y >= 7)
+                  || (contador_de_movimento_para_a_direita >= capacidade_de_movimento_para_a_direita) 
+                  || (contador_de_movimento_para_baixo >= capacidade_de_movimento_para_baixo) = False
                   | tabuleiro !! (y + 1) !! (x + 1) == 'R' = True
                   | tabuleiro !! (y + 1) !! (x + 1) /= '.' = False
-                  | otherwise = movimento_na_diagonal_principal_baixo (x + 1, y + 1) tabuleiro
+                  | otherwise = movimento_na_diagonal_principal_baixo (x + 1, y + 1) (contador_de_movimento_para_a_direita + 1) (contador_de_movimento_para_baixo + 1) capacidade_de_movimento_para_a_direita capacidade_de_movimento_para_baixo tabuleiro
 
-movimento_na_diagonal_secundaria_cima :: (Int, Int) -> [[Char]] -> Bool
-movimento_na_diagonal_secundaria_cima (x, y) tabuleiro
-                  | x >= 7 || y <= 0 = False
+movimento_na_diagonal_secundaria_cima :: (Int, Int) -> Int -> Int -> Int -> Int -> [[Char]] -> Bool
+movimento_na_diagonal_secundaria_cima (x, y) contador_de_movimento_para_a_direita contador_de_movimento_para_cima capacidade_de_movimento_para_a_direita capacidade_de_movimento_para_cima tabuleiro
+                  | (x >= 7) || (y <= 0) 
+                  || (contador_de_movimento_para_a_direita >= capacidade_de_movimento_para_a_direita)
+                  || (contador_de_movimento_para_cima >= capacidade_de_movimento_para_cima) = False
                   | (y == 0) && tabuleiro !! 0 !! (x + 1) == 'R' = True
                   | (y == 0) && tabuleiro !! 0 !! (x + 1) /= '.' = False
                   | (y > 0) && tabuleiro !! (y - 1) !! (x + 1) == 'R' = True
                   | (y > 0) && tabuleiro !! (y - 1) !! (x + 1) /= '.' = False
-                  | otherwise = movimento_na_diagonal_secundaria_cima (x + 1, y - 1) tabuleiro
+                  | otherwise = movimento_na_diagonal_secundaria_cima (x + 1, y - 1) (contador_de_movimento_para_a_direita + 1) (contador_de_movimento_para_cima + 1) capacidade_de_movimento_para_a_direita capacidade_de_movimento_para_cima tabuleiro
 
-movimento_na_diagonal_secundaria_baixo :: (Int, Int) -> [[Char]] -> Bool
-movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro
-                  | x < 0 || y > 7 = False
+movimento_na_diagonal_secundaria_baixo :: (Int, Int) -> Int -> Int -> Int -> Int -> [[Char]] -> Bool
+movimento_na_diagonal_secundaria_baixo (x, y) contador_de_movimento_para_a_esquerda contador_de_movimento_para_baixo capacidade_de_movimento_para_a_esquerda capacidade_de_movimento_para_baixo tabuleiro
+                  | (x < 0) || (y > 7)
+                  || (contador_de_movimento_para_a_esquerda >= capacidade_de_movimento_para_a_esquerda)
+                  || (contador_de_movimento_para_baixo >= capacidade_de_movimento_para_baixo) = False
                   | (x == 0) && tabuleiro !! (y + 1) !! 0 == 'R' = True
                   | (x == 0) && tabuleiro !! (y + 1) !! 0 /= '.' = False
                   | (x > 0) && tabuleiro !! (y + 1) !! (x - 1) == 'R' = True
                   | (x > 0) && tabuleiro !! (y + 1) !! (x - 1) /= '.' = False
-                  | otherwise = movimento_na_diagonal_secundaria_baixo (x - 1, y + 1) tabuleiro
+                  | otherwise = movimento_na_diagonal_secundaria_baixo (x - 1, y + 1) (contador_de_movimento_para_a_esquerda + 1) (contador_de_movimento_para_baixo + 1) capacidade_de_movimento_para_a_esquerda capacidade_de_movimento_para_baixo tabuleiro
 
 verifica_diagonal_esquerda_baixo :: (Int, Int) -> [[Char]] -> Bool
 verifica_diagonal_esquerda_baixo (x, y) tabuleiro
@@ -107,10 +116,10 @@ verifica_diagonal_direita_baixo (x, y) tabuleiro
 -- Peças
 torre :: (Char, (Int, Int)) -> [[Char]] -> Bool
 torre (peca, (x, y)) tabuleiro
-      | movimento_vertical_para_cima (x, y) 7 7 tabuleiro 
-      || movimento_vertical_para_baixo (x, y) 7 0 tabuleiro 
-      || movimento_horizontal_para_a_direita (x, y) 7 0 tabuleiro 
-      || movimento_horizontal_para_a_esquerda (x, y) 7 7 tabuleiro = True
+      | movimento_vertical_para_cima (x, y) 0 7 tabuleiro 
+      || movimento_vertical_para_baixo (x, y) 0 7 tabuleiro 
+      || movimento_horizontal_para_a_direita (x, y) 0 7 tabuleiro 
+      || movimento_horizontal_para_a_esquerda (x, y) 0 7 tabuleiro = True
       | otherwise = False
 
 cavalo :: (Char, (Int, Int)) -> Bool
@@ -118,26 +127,35 @@ cavalo (peca, (x, y)) = False
 
 bispo :: (Char, (Int, Int)) -> [[Char]] -> Bool
 bispo (peca, (x, y)) tabuleiro
-      | movimento_na_diagonal_principal_cima (x, y) tabuleiro
-      || movimento_na_diagonal_secundaria_cima (x, y) tabuleiro
-      || movimento_na_diagonal_principal_baixo (x, y) tabuleiro
-      || movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro = True
+      | movimento_na_diagonal_principal_cima (x, y) 0 0 7 7 tabuleiro
+      || movimento_na_diagonal_secundaria_cima (x, y) 0 0 7 7 tabuleiro
+      || movimento_na_diagonal_principal_baixo (x, y) 0 0 7 7 tabuleiro
+      || movimento_na_diagonal_secundaria_baixo (x, y) 0 0 7 7 tabuleiro = True
       | otherwise = False
 
 rainha :: (Char, (Int, Int)) -> [[Char]] -> Bool
 rainha (peca, (x, y)) tabuleiro
-      | movimento_vertical_para_cima (x, y) 7 7 tabuleiro 
-      || movimento_vertical_para_baixo (x, y) 7 0 tabuleiro 
-      || movimento_horizontal_para_a_direita (x, y) 7 0 tabuleiro 
-      || movimento_horizontal_para_a_esquerda (x, y) 7 7 tabuleiro
-      || movimento_na_diagonal_principal_cima (x, y) tabuleiro
-      || movimento_na_diagonal_secundaria_cima (x, y) tabuleiro
-      || movimento_na_diagonal_principal_baixo (x, y) tabuleiro
-      || movimento_na_diagonal_secundaria_baixo (x, y) tabuleiro = True
+      | movimento_vertical_para_cima (x, y) 0 7 tabuleiro 
+      || movimento_vertical_para_baixo (x, y) 0 7 tabuleiro 
+      || movimento_horizontal_para_a_direita (x, y) 0 7 tabuleiro 
+      || movimento_horizontal_para_a_esquerda (x, y) 0 7 tabuleiro
+      || movimento_na_diagonal_principal_cima (x, y) 0 0 7 7 tabuleiro
+      || movimento_na_diagonal_secundaria_cima (x, y) 0 0 7 7 tabuleiro
+      || movimento_na_diagonal_principal_baixo (x, y) 0 0 7 7 tabuleiro
+      || movimento_na_diagonal_secundaria_baixo (x, y) 0 0 7 7 tabuleiro = True
       | otherwise = False
 
-rei :: (Char, (Int, Int)) -> Bool
-rei (peca, (x, y)) = False  
+rei :: (Char, (Int, Int)) -> [[Char]] -> Bool
+rei (peca, (x, y)) tabuleiro
+    | movimento_vertical_para_cima (x, y) 0 1 tabuleiro 
+    || movimento_vertical_para_baixo (x, y) 0 1 tabuleiro 
+    || movimento_horizontal_para_a_direita (x, y) 0 1 tabuleiro 
+    || movimento_horizontal_para_a_esquerda (x, y) 0 1 tabuleiro
+    || movimento_na_diagonal_principal_cima (x, y) 0 0 1 1 tabuleiro
+    || movimento_na_diagonal_secundaria_cima (x, y) 0 0 1 1 tabuleiro
+    || movimento_na_diagonal_principal_baixo (x, y) 0 0 1 1 tabuleiro
+    || movimento_na_diagonal_secundaria_baixo (x, y) 0 0 1 1 tabuleiro = True
+    | otherwise = False
 
 peao :: (Char, (Int, Int)) -> [[Char]] -> Bool
 peao (peca, (x, y)) tabuleiro 
@@ -157,31 +175,23 @@ esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
   | peca == 't' = torre (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'b' = bispo (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'd' = rainha (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+  | peca == 'r' = rei (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'p' = peao (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | otherwise = esta_em_xeque_aux restante tabuleiro
 
-{-
-esta_em_xeque_aux :: [(Char, (Int, Int))] -> [[Char]] -> Bool
-esta_em_xeque_aux [] _ = False
-esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
-  | peca == 't' = torre (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
-  | peca == 'c' = cavalo (peca, (x, y)) || esta_em_xeque_aux restante tabuleiro
-  | peca == 'b' = bispo (peca, (x, y)) || esta_em_xeque_aux restante tabuleiro
-  | peca == 'd' = rainha (peca, (x, y)) || esta_em_xeque_aux restante tabuleiro
-  | peca == 'r' = rei (peca, (x, y)) || esta_em_xeque_aux restante tabuleiro
-  | peca == 'p' = peao (peca, (x, y)) || esta_em_xeque_aux restante tabuleiro
-  | otherwise = esta_em_xeque_aux restante tabuleiro
--}
 --
 main :: IO()
 main = do
+
   putStr "\nTabuleiro interpretado da Notacao Forsyth:\n"
   -- print (criar_tabuleiro ["1111r111","pppRpppp","8","8","8","8","PPPPPPP","TCBDRBCT"])
 
-  mapM_ print ["tcbdrbct","pppppppp","...R....",".......","........","........","PPPPPPPP","TCBDRBCT"]
+  -- tcbdrbct, pppppppp
+
+  mapM_ print ["........","....R...","..r.....","........","........","........","PPPPPPPP","TCBDRBCT"]
   
   putStr "\nSelecao das Pecas: "
-  print (selecionar_pecas ["tcbdrbct","pppppppp","R.......","........","........","........","PPPPPPPP","TCBDRBCT"])
+  print (selecionar_pecas ["........","........","..r.....","........","........","........","PPPPPPPP","TCBDRBCT"])
   
   putStr "\nEsta em Xeque? "
-  print (esta_em_xeque ["tcbdrbct","pppppppp","2p5","1R6","8","8","PPPPPPPP","TCBDRBCT"])
+  print (esta_em_xeque ["8","4R3","2r5","8","8","8","PPPPPPPP","TCBDRBCT"])
