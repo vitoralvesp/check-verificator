@@ -1,8 +1,4 @@
 -- Interpreta a notação de forsyth em uma matriz que representa o tabuleiro de xadrez
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use camelCase" #-}
-{-# HLINT ignore "Use isAsciiLower" #-}
-{-# HLINT ignore "Use head" #-}
 criar_tabuleiro :: [String] -> [[Char]]
 criar_tabuleiro = map (concatMap notacao_de_forsyth)
   where
