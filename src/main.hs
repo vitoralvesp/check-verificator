@@ -109,6 +109,9 @@ verifica_diagonal_direita_baixo (x, y) tabuleiro
                   | tabuleiro !! (y + 1) !! (x + 1) == 'R' = True 
                   | otherwise = False
 
+movimento_em_L :: (Char, (Int, Int)) -> [Char] -> Bool
+
+
 -- Peças
 torre :: (Char, (Int, Int)) -> [[Char]] -> Bool
 torre (peca, (x, y)) tabuleiro
@@ -119,7 +122,11 @@ torre (peca, (x, y)) tabuleiro
       | otherwise = False
 
 cavalo :: (Char, (Int, Int)) -> Bool
-cavalo (peca, (x, y)) = False
+cavalo (peca, (x, y))
+       | (y < 0)
+       | (y > 0)
+       | (x < 0)
+       | ...
 
 bispo :: (Char, (Int, Int)) -> [[Char]] -> Bool
 bispo (peca, (x, y)) tabuleiro
@@ -169,6 +176,7 @@ esta_em_xeque_aux :: [(Char, (Int, Int))] -> [[Char]] -> Bool
 esta_em_xeque_aux [] _ = False
 esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
   | peca == 't' = torre (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+  | peca == 'c' = cavalo (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'b' = bispo (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'd' = rainha (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'r' = rei (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
