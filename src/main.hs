@@ -109,6 +109,30 @@ verifica_diagonal_direita_baixo (x, y) tabuleiro
                   | tabuleiro !! (y + 1) !! (x + 1) == 'R' = True 
                   | otherwise = False
 
+movimento_L_cima :: Int ->(Int,Int) -> [[Char]] -> Bool
+movimento_L_cima contador_y (x_atual, y_atual) tabuleiro
+    | contador_y < 0 = False
+    | contador_y == y_atual-2 = movimento_horizontal_para_a_direita (x_atual,contador_y) 0 1 tabuleiro || movimento_horizontal_para_a_esquerda (x_atual,contador_y) 0 1 tabuleiro
+    | otherwise = movimento_L_cima (contador_y-1) (x_atual, y_atual) tabuleiro
+
+movimento_L_baixo :: Int ->(Int,Int) -> [[Char]] -> Bool
+movimento_L_baixo contador_y (x_atual, y_atual) tabuleiro
+    | contador_y > 7 = False
+    | contador_y == y_atual+2 = movimento_horizontal_para_a_direita (x_atual,contador_y) 0 1 tabuleiro || movimento_horizontal_para_a_direita (x_atual,contador_y) 0 1 tabuleiro
+    | otherwise = movimento_L_baixo (contador_y+1) (x_atual, y_atual) tabuleiro
+
+movimento_L_esq:: Int ->(Int,Int)-> [[Char]] -> Bool
+movimento_L_esq contador_x (x_atual, y_atual) tabuleiro
+    | contador_x < 0 = False
+    | contador_x == x_atual-2 = movimento_vertical_para_cima (contador_x,y_atual) 0 1 tabuleiro || movimento_vertical_para_baixo(contador_x,y_atual) 0 1 tabuleiro
+    | otherwise = movimento_L_esq (contador_x-1) (x_atual, y_atual) tabuleiro
+
+movimento_L_dir:: Int ->(Int,Int)-> [[Char]] -> Bool
+movimento_L_dir contador_x (x_atual, y_atual) tabuleiro
+    | contador_x > 7 = False
+    | contador_x == x_atual+2 = movimento_vertical_para_cima (contador_x,y_atual) 0 1 tabuleiro || movimento_vertical_para_baixo(contador_x,y_atual) 0 1 tabuleiro
+    | otherwise = movimento_L_dir (contador_x+1) (x_atual, y_atual) tabuleiro
+
 -- Peças
 torre :: (Char, (Int, Int)) -> [[Char]] -> Bool
 torre (peca, (x, y)) tabuleiro
@@ -118,8 +142,8 @@ torre (peca, (x, y)) tabuleiro
       || movimento_horizontal_para_a_esquerda (x, y) 0 7 tabuleiro = True
       | otherwise = False
 
-cavalo :: (Char, (Int, Int)) -> Bool
-cavalo (peca, (x, y)) = False
+cavalo :: (Int,Int) -> [[Char]] -> Bool
+cavalo (x_atual,y_atual) tabuleiro = movimento_L_cima y_atual (x_atual,y_atual) tabuleiro || movimento_L_baixo y_atual (x_atual,y_atual) tabuleiro || movimento_L_esq x_atual (x_atual,y_atual) tabuleiro || movimento_L_dir x_atual (x_atual,y_atual) tabuleiro 
 
 bispo :: (Char, (Int, Int)) -> [[Char]] -> Bool
 bispo (peca, (x, y)) tabuleiro
@@ -173,6 +197,7 @@ esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
   | peca == 'd' = rainha (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'r' = rei (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'p' = peao (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+  | peca == 'c' = cavalo (x,y) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | otherwise = esta_em_xeque_aux restante tabuleiro
 
 --
@@ -184,10 +209,10 @@ main = do
 
   -- tcbdrbct, pppppppp
 
-  mapM_ print ["........","....R...","..r.....","........","........","........","PPPPPPPP","TCBDRBCT"]
+  mapM_ print ["........","....R...","........",".......c","........","........","PPPPPPPP","TCBDRBCT"]
   
   putStr "\nSelecao das Pecas: "
-  print (selecionar_pecas ["........","........","..r.....","........","........","........","PPPPPPPP","TCBDRBCT"])
+  print (selecionar_pecas [".......","........","........",".......c","........","........","PPPPPPPP","TCBDRBCT"])
   
   putStr "\nEsta em Xeque? "
-  print (esta_em_xeque ["8","4R3","2r5","8","8","8","PPPPPPPP","TCBDRBCT"])
+  print (esta_em_xeque ["8","4R3","8","7c","8","8","PPPPPPPP","TCBDRBCT"])
