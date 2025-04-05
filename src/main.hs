@@ -193,12 +193,11 @@ esta_em_xeque_aux :: [(Char, (Int, Int))] -> [[Char]] -> Bool
 esta_em_xeque_aux [] _ = False
 esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
   | peca == 't' = torre (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
-  | peca == 'c' = cavalo (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
+  | peca == 'c' = cavalo (x,y) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'b' = bispo (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'd' = rainha (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'r' = rei (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'p' = peao (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
-  | peca == 'c' = cavalo (x,y) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | otherwise = esta_em_xeque_aux restante tabuleiro
 
 --
