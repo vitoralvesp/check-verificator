@@ -13,6 +13,7 @@ cabal-dev
 .hsenv
 .cabal-sandbox/
 cabal.sandbox.config
+*.json
 *.prof
 *.aux
 *.hp
