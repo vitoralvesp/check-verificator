@@ -332,3 +332,20 @@ esta_em_xeque_aux ((peca, (x, y)):restante) tabuleiro
   | peca == 'r' = rei (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | peca == 'p' = peao (peca, (x, y)) tabuleiro || esta_em_xeque_aux restante tabuleiro
   | otherwise = esta_em_xeque_aux restante tabuleiro
+
+--
+main :: IO()
+main = do
+
+  putStr "\nTabuleiro interpretado da Notacao Forsyth:\n"
+  -- print (criar_tabuleiro ["1111r111","pppRpppp","8","8","8","8","PPPPPPP","TCBDRBCT"])
+
+  -- tcbdrbct, pppppppp
+
+  mapM_ print ["........","....R...","........",".......c","........","........","PPPPPPPP","TCBDRBCT"]
+  
+  putStr "\nSelecao das Pecas: "
+  print (selecionar_pecas [".......","........","........",".......c","........","........","PPPPPPPP","TCBDRBCT"])
+  
+  putStr "\nEsta em Xeque? "
+  print (esta_em_xeque ["8","4R3","8","7c","8","8","PPPPPPPP","TCBDRBCT"])
