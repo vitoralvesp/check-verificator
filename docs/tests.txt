@@ -1,0 +1,59 @@
+# 1. Torre preta dá xeque direto na linha
+["8","8","8","4t3","8","8","4R3","8"] -> True
+
+# 2. Cavalo preto dá xeque no centro
+["8","8","3c4","8","4R3","8","8","8"] -> True
+
+# 3. Bispo preto ameaça diagonal
+["8","8","8","2b5","3R4","8","8","8"] -> True
+
+# 4. Dama preta ameaça na coluna
+["3d4","8","8","8","3R4","8","8","8"] -> True
+
+# 5. Rei branco cercado, mas não em xeque
+["8","8","8","8","3R4","2P1P3","3P4","8"] -> False
+
+# 6. Cavalo preto fora do alcance
+["8","8","3c4","8","8","3R4","8","8"] -> False
+
+# 7. Dama preta ameaça pela diagonal
+["8","8","8","1d6","2P5","3R4","8","8"] -> True
+
+# 8. Rei branco sozinho, sem ameaça
+["8","8","8","8","3R4","8","8","8"] -> False
+
+# 9. Peão preto ameaçando diretamente
+["8","8","8","3p4","3R4","8","8","8"] -> True
+
+# 10. Peão preto próximo mas sem ameaça
+["8","8","8","3p4","4R3","8","8","8"] -> False
+
+# 11. Rei preto ao lado do rei branco
+["8","8","8","4r3","3R4","8","8","8"] -> True
+
+# 12. Torre preta dá xeque por coluna
+["4t3","8","8","8","3R4","8","8","8"] -> False
+
+# 13. Cavalo preto não ameaça
+["8","8","8","2c5","3R4","8","8","8"] -> False
+
+# 14. Dama preta encurralada, mas dá xeque
+["8","8","8","8","3R4","8","1d6","8"] -> True
+
+# 15. Bispo preto obstruído
+["8","8","2P5","2b5","3R4","8","8","8"] -> False
+
+# 16. Xeque por torre com várias peças no caminho
+["t6t","pppppppp","8","8","4R3","8","PPPPPPPP","T6T"] -> True
+
+# 17. Rei branco em xeque por peão escondido
+["8","8","8","3p4","4R3","8","8","8"] -> True
+
+# 18. Rei branco no canto, dama em xeque diagonal
+["8","8","8","8","7d","8","8","7R"] -> True
+
+# 19. Rei branco protegido por peças aliadas
+["8","8","8","3B4","2P1R3","4P3","8","8"] -> False
+
+# 20. Tabuleiro cheio, sem xeque
+["tcbdrbct","pppppppp","8","8","8","8","PPPPPPPP","TCBDRBCT"] -> False
