@@ -12,14 +12,25 @@
  * 
  */
 
-/**
- * [[t,c,b,r,d,r,b,c,t],8,8,8,8,8,8,[T,C,B,D,R,B,C,T]]
- * 
- * 
- *  
- */
+% Descrição: Interpreta a notação de forsyth em uma matriz que representa o tabuleiro
+% Parâmetros: Lista, Lista
+criar_tabuleiro([], []).
+criar_tabuleiro([Linha|Resto], [LinhaInterpretada|TabuleiroInterpretado]) :-
+    converter_linha(Linha, LinhaInterpretada),
+    criar_tabuleiro(Resto, TabuleiroInterpretado).
 
-criar_tabuleiro([[]], [[]]).
-criar_tabuleiro([A|X], tabuleiro) :-
-    writeln(A),
-    criar_tabuleiro(X, tabuleiro).    
+% Descrição: Converte os números (1 a 8) em '.', mas mantém as listas como estão
+% Parâmetros: Número (1 a 8) ou Caractere (Peças Pretas ou Brancas), Lista
+converter_linha(N, Lista) :-
+    number(N),
+    gerar_vazias(N, Lista).
+converter_linha(Lista, Lista) :-
+  	is_list(Lista).
+
+% Descrição: Função auxiliar para converter os números (1 a 8) em '.'
+% Parâmetros: Número (0 a 8), Lista
+gerar_vazias(0, []).
+gerar_vazias(N, ['.'|Resto]) :-
+    N > 0,
+    N1 is N-1,
+    gerar_vazias(N1, Resto).
