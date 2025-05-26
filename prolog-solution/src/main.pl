@@ -101,3 +101,21 @@ coletar_linha([Outro|Resto], X, Y, Resultado) :-
     \+ validar_peca_preta(Outro),
     X1 is X + 1,
     coletar_linha(Resto, X1, Y, Resultado).
+
+
+/* PARTE 3: SIMULAR O MOVIMENTO DAS PEÇAS PRETAS */
+
+% 
+movimento_vertical_para_baixo(_, Y, Contador, Capacidade, _, false) :-
+    (Y >= 7; Contador >= Capacidade), !.
+
+movimento_vertical_para_baixo(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
+    Y1 is Y + 1,
+    nth0(Y1, Tabuleiro, Linha),
+    nth0(X, Linha, Peca),
+    (
+    	Peca == 'R' -> Resultado = true;
+    	Peca \== '.' -> Resultado = false;
+    	ContadorAux is Contador + 1,
+        movimento_vertical_para_baixo(X, Y1, ContadorAux, Capacidade, Tabuleiro, Resultado)
+    ).
