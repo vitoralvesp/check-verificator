@@ -119,3 +119,19 @@ movimento_vertical_para_baixo(X, Y, Contador, Capacidade, Tabuleiro, Resultado) 
     	ContadorAux is Contador + 1,
         movimento_vertical_para_baixo(X, Y1, ContadorAux, Capacidade, Tabuleiro, Resultado)
     ).
+
+% Descrição: Simula o movimento vertical indo do final até o topo do tabuleiro
+% Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
+movimento_vertical_para_cima(_, Y, Contador, Capacidade, _, false) :-
+    (Y <= 0; Contador >= Capacidade), !.
+
+movimento_vertical_para_cima(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
+    Y1 is Y - 1,
+    nth0(Y1, Tabuleiro, Linha),
+    nth0(X, Linha, Peca),
+    (
+    	Peca == 'R' -> Resultado = true;
+    	Peca \== '.' -> Resultado = false;
+    	ContadorAux is Contador + 1,
+        movimento_vertical_para_cima(X, Y1, ContadorAux, Capacidade, Tabuleiro, Resultado)
+    ).
