@@ -12,6 +12,11 @@
  * 
  */
 
+/* PARTE 1: LER A NOTAÇÃO DE FORSYTH E PROCESSAR COMO TABULEIRO *
+ * ToDo: Por enquanto, só processa se as peças brancas estiverem com aspas simples ('T', 'B', etc); 
+ * conversar com o Basile sobre os critérios para a entrada. 
+ */
+
 % Descrição: Interpreta a notação de forsyth em uma matriz que representa o tabuleiro
 % Parâmetros: Lista, Lista
 criar_tabuleiro([], []).
@@ -24,6 +29,7 @@ criar_tabuleiro([Linha|Resto], [LinhaInterpretada|TabuleiroInterpretado]) :-
 processar_linha(N, Lista) :-
     number(N),
     gerar_vazias(N, Lista).
+
 processar_linha(Linha, LinhaInterpretada) :-
     is_list(Linha),
     expandir_linha(Linha, LinhaInterpretada).
@@ -59,3 +65,39 @@ gerar_vazias(N, ['.'|Resto]) :-
     N > 0,
     N1 is N-1,
     gerar_vazias(N1, Resto).
+
+
+/* PARTE 2: PROCESSAR TODAS AS PEÇAS PRETAS DO TABULEIRO, INCLUINDO PEÇA E COORDENADAS X E Y */
+
+% Descrição: Valida se a peça é preta (diferente de letras maiúsculas ou '.')
+% Parâmetros: Átomo
+validar_peca_preta(Peca) :-
+    atom(Peca),
+    atom_chars(Peca, [Letra]),
+    char_type(Letra, lower),
+    Peca \= '.'.
+
+% Descrição: Seleciona as peças pretas no tabuleiro, percorrendo linha a linha com índice Y
+% Parâmetros: Lista de Lista
+selecionar_pecas(Tabuleiro, Posicoes) :-
+    selecionar_pecas(Tabuleiro, 0, Posicoes).
+
+selecionar_pecas([], _, []).
+selecionar_pecas([Linha|Resto], Y, Posicoes) :-
+	coletar_linha(Linha, 0, Y, PosicoesLinha),
+    Y1 is Y + 1,
+    selecionar_pecas(Resto, Y1, PosicoesResto),
+    append(PosicoesLinha, PosicoesResto, Posicoes).
+
+% Descrição: Percorre uma linha, elemento por elemento
+% Parâmetros: Tabuleiro, X, Y, Lista de Listas com as peças pretas e suas coodenadas x e y na forma [peça, x, y]
+coletar_linha([], _, _, []).
+coletar_linha([Peca|Resto], X, Y, [[Peca, X, Y]|Outros]) :-
+    validar_peca_preta(Peca),
+    X1 is X + 1,
+    coletar_linha(Resto, X1, Y, Outros).
+
+coletar_linha([Outro|Resto], X, Y, Resultado) :-
+    \+ validar_peca_preta(Outro),
+    X1 is X + 1,
+    coletar_linha(Resto, X1, Y, Resultado).
