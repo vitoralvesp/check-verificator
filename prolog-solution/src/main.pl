@@ -151,3 +151,19 @@ movimento_horizontal_para_a_direita(X, Y, Contador, Capacidade, Tabuleiro, Resul
     	ContadorAux is Contador + 1,
         movimento_horizontal_para_a_direita(X1, Y, ContadorAux, Capacidade, Tabuleiro, Resultado)
     ).
+
+% Descrição: Simula o movimento horizontal indo da direita à esquerda do tabuleiro
+% Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
+movimento_horizontal_para_a_esquerda(X, _, Contador, Capacidade, _, false) :-
+    (X =< 0; Contador >= Capacidade), !.
+
+movimento_horizontal_para_a_esquerda(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
+    X1 is X - 1,
+    nth0(Y, Tabuleiro, Linha),
+    nth0(X1, Linha, Peca),
+    (
+    	Peca == 'R' -> Resultado = true;
+    	Peca \== '.' -> Resultado = false;
+    	ContadorAux is Contador + 1,
+        movimento_horizontal_para_a_esquerda(X1, Y, ContadorAux, Capacidade, Tabuleiro, Resultado)
+    ).
