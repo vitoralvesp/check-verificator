@@ -167,3 +167,71 @@ movimento_horizontal_para_a_esquerda(X, Y, Contador, Capacidade, Tabuleiro, Resu
     	ContadorAux is Contador + 1,
         movimento_horizontal_para_a_esquerda(X1, Y, ContadorAux, Capacidade, Tabuleiro, Resultado)
     ).
+
+% Descrição: Simula o movimento diagonal no sentido inferior direito do tabuleiro
+% Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
+movimento_diagonal_inferior_direita(X, Y, _, Capacidade, _, false) :-
+    (X >= 7; Y >= 7; Capacidade =< 0), !.
+
+movimento_diagonal_inferior_direita(X, Y, Tabuleiro, Capacidade, Resultado) :-
+    X1 is X + 1,
+    Y1 is Y + 1,
+    nth0(Y1, Tabuleiro, Linha),
+    nth0(X1, Linha, Peca),
+    (
+        Peca == 'R' -> Resultado = true;
+        Peca \== '.' -> Resultado = false;
+        Capacidade1 is Capacidade - 1,
+        movimento_diagonal_inferior_direita(X1, Y1, Tabuleiro, Capacidade1, Resultado)
+    ).
+
+% Descrição: Simula o movimento diagonal no sentido inferior esquerdo do tabuleiro
+% Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
+movimento_diagonal_inferior_esquerda(X, Y, _, Capacidade, _, false) :-
+    (X =< 0; Y >= 7; Capacidade =< 0), !.
+
+movimento_diagonal_inferior_esquerda(X, Y, Tabuleiro, Capacidade, Resultado) :-
+    X1 is X - 1,
+    Y1 is Y + 1,
+    nth0(Y1, Tabuleiro, Linha),
+    nth0(X1, Linha, Peca),
+    (
+        Peca == 'R' -> Resultado = true;
+        Peca \== '.' -> Resultado = false;
+        Capacidade1 is Capacidade - 1,
+        movimento_diagonal_inferior_esquerda(X1, Y1, Tabuleiro, Capacidade1, Resultado)
+    ).
+
+% Descrição: Simula o movimento diagonal no sentido superior direito do tabuleiro
+% Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
+movimento_diagonal_superior_direita(X, Y, _, Capacidade, _, false) :-
+    (X >= 7; Y =< 0 ; Capacidade =< 0), !.
+
+movimento_diagonal_superior_direita(X, Y, Tabuleiro, Capacidade, Resultado) :-
+    X1 is X + 1,
+    Y1 is Y - 1,
+    nth0(Y1, Tabuleiro, Linha),
+    nth0(X1, Linha, Peca),
+    (
+        Peca == 'R' -> Resultado = true;
+        Peca \== '.' -> Resultado = false;
+        Capacidade1 is Capacidade - 1,
+        movimento_diagonal_superior_direita(X1, Y1, Tabuleiro, Capacidade1, Resultado)
+    ).
+
+% Descrição: Simula o movimento diagonal no sentido superior esquerdo do tabuleiro
+% Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
+movimento_diagonal_superior_esquerda(X, Y, _, Capacidade, _, false) :-
+    (X =< 0; Y =< 0; Capacidade =< 0), !.
+
+movimento_diagonal_superior_esquerda(X, Y, Tabuleiro, Capacidade, Resultado) :-
+    X1 is X - 1,
+    Y1 is Y - 1,
+    nth0(Y1, Tabuleiro, Linha),
+    nth0(X1, Linha, Peca),
+    (
+        Peca == 'R' -> Resultado = true;
+        Peca \== '.' -> Resultado = false;
+        Capacidade1 is Capacidade - 1,
+        movimento_diagonal_superior_esquerda(X1, Y1, Tabuleiro, Capacidade1, Resultado)
+    ).
