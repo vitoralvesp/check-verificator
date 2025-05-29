@@ -235,3 +235,31 @@ movimento_diagonal_superior_esquerda(X, Y, Tabuleiro, Capacidade, Resultado) :-
         Capacidade1 is Capacidade - 1,
         movimento_diagonal_superior_esquerda(X1, Y1, Tabuleiro, Capacidade1, Resultado)
     ).
+
+/* PARTE 4: CRIAR CADA PEÇA E SIMULAR O MOVIMENTO INDIVIDUAL DE CADA UMA */
+bispo(_, _, _, false).
+bispo(X, Y, Tabuleiro, Resultado) :-
+	(
+        movimento_diagonal_inferior_direita(X, Y, Tabuleiro, 7, true);
+        movimento_diagonal_inferior_esquerda(X, Y, Tabuleiro, 7, true);
+        movimento_diagonal_superior_direita(X, Y, Tabuleiro, 7, true);
+        movimento_diagonal_superior_esquerda(X, Y, Tabuleiro, 7, true)
+    ),
+    Resultado = false.
+
+
+/* PARTE 5: SIMULAR CADA PEÇA PRETA DO TABULEIRO E DEFINIR SE O REI BRANCO ESTÁ EM XEQUE OU NÃO */
+esta_em_xeque(NotacaoDeForsyth, Resultado) :-
+    criar_tabuleiro(NotacaoDeForsyth, Tabuleiro),
+    selecionar_pecas(Tabuleiro, Pecas),
+    esta_em_xeque_aux(Pecas, Tabuleiro, Resultado).
+
+esta_em_xeque_aux([], _, false).
+esta_em_xeque_aux([[Peca, X, Y]|Resto], Tabuleiro, Resultado) :-
+    (   
+    	Peca == 'b', bispo(X, Y, Tabuleiro, Resultado)
+    );
+    esta_em_xeque_aux(Resto, Tabuleiro, Resultado).
+
+% [[t,c,b,r,d,r,b,c,t],8,8,8,8,8,8,['T','C','B','D','R','B','C','T']]
+% [[t,c,b,r,d,r,b,c,t],[3,'R',4],8,8,8,8,8,['T','C','B','D','R','B','C','T']]
