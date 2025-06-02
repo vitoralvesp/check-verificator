@@ -1,21 +1,18 @@
-
- % Projeto: Esta em xeque?
- % 
- %Integrantes:
- % Jessica Bispo, 10410798
- % Lucas Pires de Camargo Sarai, 10418013
- % Vitor Alves Pereira, 10410862
- % 
- % Referências:
- % [ 1 ] https://pt.wikipedia.org/wiki/Notação_Forsyth
- % [ 2 ] https://pt.wikipedia.org/wiki/XadrezLeis_do_xadrez
- % 
- %
-
-% PARTE 1: LER A NOTAÇÃO DE FORSYTH E PROCESSAR COMO TABULEIRO *
-% ToDo: Por enquanto, só processa se as peças brancas estiverem com aspas simples ('T', 'B', etc); 
-% conversar com o Basile sobre os critérios para a entrada. 
+% Projeto: Esta em xeque?
+% 
+% Integrantes:
+% Jessica Bispo, 10410798
+% Lucas Pires de Camargo Sarai, 10418013
+% Vitor Alves Pereira, 10410862
+% 
+% Referências:
+% [ 1 ] https://pt.wikipedia.org/wiki/Notação_Forsyth
+% [ 2 ] https://pt.wikipedia.org/wiki/XadrezLeis_do_xadrez
 %
+
+/* PARTE 1: LER A NOTAÇÃO DE FORSYTH E PROCESSAR COMO TABULEIRO 
+ * P.S.: Inserir a notação de forsyth com as peças pretas e brancas com aspas simples na forma [['t','c','b','d','r','b','c','t'],8,8,8,8,8,8,['T','C','B','D','R','B','C','T']]
+ */
 
 % Descrição: Interpreta a notação de forsyth em uma matriz que representa o tabuleiro
 % Parâmetros: Lista, Lista
@@ -105,22 +102,23 @@ coletar_linha([Outro|Resto], X, Y, Resultado) :-
 
 /* PARTE 3: SIMULAR O MOVIMENTO DAS PEÇAS PRETAS */
 
-% 
+% Descrição: Simula o movimento vertical indo do topo até o final do tabuleiro
+% Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
 movimento_vertical_para_baixo(_, Y, Contador, Capacidade, _, false) :-
     Y >= 7;
     Contador >= Capacidade.
 
 movimento_vertical_para_baixo(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
     Y1 is Y + 1,
-    Contador1 is Contador + 1,
+    ContadorAux is Contador + 1,
     nth0(Y1, Tabuleiro, Linha),
     nth0(X, Linha, Peca),
     (
-       Contador1 =< Capacidade ->
+       ContadorAux =< Capacidade ->
        (
          Peca == 'R' -> Resultado = true;
          Peca \== '.' -> Resultado = false;
-         movimento_vertical_para_baixo(X, Y1, Contador1, Capacidade, Tabuleiro, Resultado)
+         movimento_vertical_para_baixo(X, Y1, ContadorAux, Capacidade, Tabuleiro, Resultado)
         );
         Resultado = false
     ).
@@ -128,117 +126,157 @@ movimento_vertical_para_baixo(X, Y, Contador, Capacidade, Tabuleiro, Resultado) 
 % Descrição: Simula o movimento vertical indo do final até o topo do tabuleiro
 % Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
 movimento_vertical_para_cima(_, Y, Contador, Capacidade, _, false) :-
-    (Y =< 0; Contador >= Capacidade), !.
+    Y =< 0;
+    Contador >= Capacidade.
 
 movimento_vertical_para_cima(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
     Y1 is Y - 1,
+    ContadorAux is Contador + 1,
     nth0(Y1, Tabuleiro, Linha),
     nth0(X, Linha, Peca),
     (
-    	Peca == 'R' -> Resultado = true;
-    	Peca \== '.' -> Resultado = false;
-    	ContadorAux is Contador + 1,
-        movimento_vertical_para_cima(X, Y1, ContadorAux, Capacidade, Tabuleiro, Resultado)
-    ).
-
-% Descrição: Simula o movimento horizontal indo da esquerda à direita do tabuleiro
-% Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
-movimento_horizontal_para_a_direita(X, _, Contador, Capacidade, _, false) :-
-    (X >= 7; Contador >= Capacidade), !.
-
-movimento_horizontal_para_a_direita(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
-    X1 is X + 1,
-    nth0(Y, Tabuleiro, Linha),
-    nth0(X1, Linha, Peca),
-    (
-    	Peca == 'R' -> Resultado = true;
-    	Peca \== '.' -> Resultado = false;
-    	ContadorAux is Contador + 1,
-        movimento_horizontal_para_a_direita(X1, Y, ContadorAux, Capacidade, Tabuleiro, Resultado)
+    	ContadorAux =< Capacidade ->
+        (
+    		Peca == 'R' -> Resultado = true;
+    		Peca \== '.' -> Resultado = false;
+        	movimento_vertical_para_cima(X, Y1, ContadorAux, Capacidade, Tabuleiro, Resultado)
+        );
+    	Resultado = false
     ).
 
 % Descrição: Simula o movimento horizontal indo da direita à esquerda do tabuleiro
 % Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
 movimento_horizontal_para_a_esquerda(X, _, Contador, Capacidade, _, false) :-
-    (X =< 0; Contador >= Capacidade), !.
+    X =< 0;
+    Contador >= Capacidade.
 
 movimento_horizontal_para_a_esquerda(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
-    X1 is X - 1,
+    X1 is X + 1,
+    ContadorAux is Contador + 1,
     nth0(Y, Tabuleiro, Linha),
     nth0(X1, Linha, Peca),
     (
-    	Peca == 'R' -> Resultado = true;
-    	Peca \== '.' -> Resultado = false;
-    	ContadorAux is Contador + 1,
-        movimento_horizontal_para_a_esquerda(X1, Y, ContadorAux, Capacidade, Tabuleiro, Resultado)
+    	ContadorAux =< Capacidade ->
+        (
+    		Peca == 'R' -> Resultado = true;
+    		Peca \== '.' -> Resultado = false;
+        	movimento_horizontal_para_a_esquerda(X1, Y, ContadorAux, Capacidade, Tabuleiro, Resultado)
+        );
+        Resultado = false
+    ).
+
+% Descrição: Simula o movimento horizontal indo da esquerda à direita do tabuleiro
+% Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
+movimento_horizontal_para_a_direita(X, _, Contador, Capacidade, _, false) :-
+    X >= 7;
+    Contador >= Capacidade.
+
+movimento_horizontal_para_a_direita(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
+    X1 is X - 1,
+    ContadorAux is Contador + 1,
+    nth0(Y, Tabuleiro, Linha),
+    nth0(X1, Linha, Peca),
+    (
+    	ContadorAux =< Capacidade ->
+        (
+    		Peca == 'R' -> Resultado = true;
+    		Peca \== '.' -> Resultado = false;
+        	movimento_horizontal_para_a_direita(X1, Y, ContadorAux, Capacidade, Tabuleiro, Resultado)
+    	);
+    	Resultado = false
     ).
 
 % Descrição: Simula o movimento diagonal no sentido inferior direito do tabuleiro
 % Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
 movimento_diagonal_inferior_direita(X, Y, _, Capacidade, _, false) :-
-    (X >= 7; Y >= 7; Capacidade =< 0), !.
+    X >= 7;
+    Y >= 7; 
+    Capacidade =< 0.
 
-movimento_diagonal_inferior_direita(X, Y, Tabuleiro, Capacidade, Resultado) :-
+movimento_diagonal_inferior_direita(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
     X1 is X + 1,
     Y1 is Y + 1,
+    ContadorAux is Contador + 1,
     nth0(Y1, Tabuleiro, Linha),
     nth0(X1, Linha, Peca),
     (
-        Peca == 'R' -> Resultado = true;
-        Peca \== '.' -> Resultado = false;
-        Capacidade1 is Capacidade - 1,
-        movimento_diagonal_inferior_direita(X1, Y1, Tabuleiro, Capacidade1, Resultado)
+    	ContadorAux =< Capacidade ->
+        (
+        	Peca == 'R' -> Resultado = true;
+            Peca \== '.' -> Resultado = false;
+        	movimento_diagonal_inferior_direita(X1, Y1, ContadorAux, Capacidade, Tabuleiro, Resultado)
+    	);
+    	Resultado = false
     ).
 
 % Descrição: Simula o movimento diagonal no sentido inferior esquerdo do tabuleiro
 % Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
-movimento_diagonal_inferior_esquerda(X, Y, _, Capacidade, _, false) :-
-    (X =< 0; Y >= 7; Capacidade =< 0), !.
+movimento_diagonal_inferior_esquerda(X, Y, Contador, Capacidade, _, false) :-
+    X =< 0;
+    Y >= 7;
+    Contador >= Capacidade.
 
-movimento_diagonal_inferior_esquerda(X, Y, Tabuleiro, Capacidade, Resultado) :-
+movimento_diagonal_inferior_esquerda(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
     X1 is X - 1,
     Y1 is Y + 1,
+    ContadorAux is Contador + 1,
     nth0(Y1, Tabuleiro, Linha),
     nth0(X1, Linha, Peca),
     (
-        Peca == 'R' -> Resultado = true;
-        Peca \== '.' -> Resultado = false;
-        Capacidade1 is Capacidade - 1,
-        movimento_diagonal_inferior_esquerda(X1, Y1, Tabuleiro, Capacidade1, Resultado)
+    	ContadorAux =< Capacidade ->
+        (
+        	Peca == 'R' -> Resultado = true;
+        	Peca \== '.' -> Resultado = false;
+        	movimento_diagonal_inferior_esquerda(X1, Y1, ContadorAux, Capacidade, Tabuleiro, Resultado)
+    	);
+    	Resultado = false
     ).
+    	
 
 % Descrição: Simula o movimento diagonal no sentido superior direito do tabuleiro
 % Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
-movimento_diagonal_superior_direita(X, Y, _, Capacidade, _, false) :-
-    (X >= 7; Y =< 0 ; Capacidade =< 0), !.
+movimento_diagonal_superior_direita(X, Y, Contador, Capacidade, _, false) :-
+    X >= 7;
+    Y =< 0;
+    Contador >= Capacidade.
 
-movimento_diagonal_superior_direita(X, Y, Tabuleiro, Capacidade, Resultado) :-
+movimento_diagonal_superior_direita(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
     X1 is X + 1,
     Y1 is Y - 1,
+    ContadorAux is Contador + 1,
     nth0(Y1, Tabuleiro, Linha),
     nth0(X1, Linha, Peca),
     (
-        Peca == 'R' -> Resultado = true;
-        Peca \== '.' -> Resultado = false;
-        Capacidade1 is Capacidade - 1,
-        movimento_diagonal_superior_direita(X1, Y1, Tabuleiro, Capacidade1, Resultado)
+    	ContadorAux =< Capacidade ->
+        (
+        	Peca == 'R' -> Resultado = true;
+        	Peca \== '.' -> Resultado = false;
+        	movimento_diagonal_superior_direita(X1, Y1, ContadorAux, Capacidade, Tabuleiro, Resultado)
+    	);
+    	Resultado = false
     ).
 
 % Descrição: Simula o movimento diagonal no sentido superior esquerdo do tabuleiro
 % Parâmetros: Coordenada X, Coordenada Y, Contador de Movimentos, Capacidade de Movimentos, Tabuleiro, Resultado
-movimento_diagonal_superior_esquerda(X, Y, _, Capacidade, _, false) :-
-    (X =< 0; Y =< 0; Capacidade =< 0), !.
+movimento_diagonal_superior_esquerda(X, Y, Contador, Capacidade, _, false) :-
+    X =< 0;
+    Y =< 0;
+    Contador >= Capacidade.
 
-movimento_diagonal_superior_esquerda(X, Y, Tabuleiro, Capacidade, Resultado) :-
+movimento_diagonal_superior_esquerda(X, Y, Contador, Capacidade, Tabuleiro, Resultado) :-
     X1 is X - 1,
     Y1 is Y - 1,
+    ContadorAux is Contador + 1,
     nth0(Y1, Tabuleiro, Linha),
     nth0(X1, Linha, Peca),
     (
-        Peca == 'R' -> Resultado = true;
-        Peca \== '.' -> Resultado = false;
-        Capacidade1 is Capacidade - 1,
-        movimento_diagonal_superior_esquerda(X1, Y1, Tabuleiro, Capacidade1, Resultado)
+    	ContadorAux =< Capacidade ->
+    	(   
+        	Peca == 'R' -> Resultado = true;
+        	Peca \== '.' -> Resultado = false;
+        	movimento_diagonal_superior_esquerda(X1, Y1, ContadorAux, Capacidade, Tabuleiro, Resultado)
+    	);
+    	Resultado = false
     ).
 
 % Descrição: Simula o movimento l para cima, indo duas casas para cima e uma para direita ou esquerda.
@@ -247,11 +285,11 @@ movimento_l_cima(X, Y, _, false) :-
     (X =< 0; Y =< 0), !.
 
 movimento_l_cima(X, Y, Tabuleiro, Resultado) :-
-    movimento_vertical_para_cima(X,Y,0,2,Tabuleiro,false),
+    movimento_vertical_para_cima(X, Y, 0, 2, Tabuleiro, false),
     Y2 is Y-2,
     (
-        movimento_horizontal_para_a_esquerda(X, Y2, 0,1,Tabuleiro, true);
-        movimento_horizontal_para_a_direita(X, Y2, 0,1,Tabuleiro, true)
+        movimento_horizontal_para_a_esquerda(X, Y2, 0, 1, Tabuleiro, true);
+        movimento_horizontal_para_a_direita(X, Y2, 0, 1, Tabuleiro, true)
     ),
     Resultado = true.
 
@@ -299,49 +337,59 @@ movimento_l_direita(X, Y, Tabuleiro, Resultado) :-
 
 
 /* PARTE 4: CRIAR CADA PEÇA E SIMULAR O MOVIMENTO INDIVIDUAL DE CADA UMA */
+
+% Descrição: Simula os movimentos do bispo
+% Parâmetros: Coordenada X, Coordenada Y, Tabuleiro, Resultado
 bispo(X, Y, Tabuleiro, Resultado) :-
 	(
-        movimento_diagonal_inferior_direita(X, Y, Tabuleiro, 7, true);
-        movimento_diagonal_inferior_esquerda(X, Y, Tabuleiro, 7, true);
-        movimento_diagonal_superior_direita(X, Y, Tabuleiro, 7, true);
-        movimento_diagonal_superior_esquerda(X, Y, Tabuleiro, 7, true)
+        movimento_diagonal_inferior_direita(X, Y, 0, 7, Tabuleiro, true);
+        movimento_diagonal_inferior_esquerda(X, Y, 0, 7, Tabuleiro, true);
+        movimento_diagonal_superior_direita(X, Y, 0, 7, Tabuleiro, true);
+        movimento_diagonal_superior_esquerda(X, Y, 0, 7, Tabuleiro, true)
     ),
     Resultado = true.
 
-
+% Descrição: Simula os movimentos da rainha
+% Parâmetros: Coordenada X, Coordenada Y, Tabuleiro, Resultado
 rainha(X, Y, Tabuleiro, Resultado) :-
 	(
     	movimento_horizontal_para_a_esquerda(X,Y,0,7,Tabuleiro,true);
     	movimento_horizontal_para_a_direita(X,Y,0,7,Tabuleiro,true);
     	movimento_vertical_para_cima(X,Y,0,7,Tabuleiro,true);
     	movimento_vertical_para_baixo(X,Y,0,7,Tabuleiro,true);
-        movimento_diagonal_inferior_direita(X, Y, Tabuleiro, 7, true);
-        movimento_diagonal_inferior_esquerda(X, Y, Tabuleiro, 7, true);
-        movimento_diagonal_superior_direita(X, Y, Tabuleiro, 7, true);
-        movimento_diagonal_superior_esquerda(X, Y, Tabuleiro, 7, true)
+        movimento_diagonal_inferior_direita(X, Y, 0, 7, Tabuleiro, true);
+        movimento_diagonal_inferior_esquerda(X, Y, 0, 7, Tabuleiro, true);
+        movimento_diagonal_superior_direita(X, Y, 0, 7, Tabuleiro, true);
+        movimento_diagonal_superior_esquerda(X, Y, 0, 7, Tabuleiro, true)
     ),
     Resultado = true.
 
+% Descrição: Simula os movimentos do rei
+% Parâmetros: Coordenada X, Coordenada Y, Tabuleiro, Resultado
 rei(X, Y, Tabuleiro, Resultado) :-
 	(
     	movimento_horizontal_para_a_esquerda(X, Y, 0, 1, Tabuleiro, true);
     	movimento_horizontal_para_a_direita(X, Y, 0, 1, Tabuleiro, true);
     	movimento_vertical_para_cima(X, Y, 0, 1, Tabuleiro, true);
     	movimento_vertical_para_baixo(X, Y, 0, 1, Tabuleiro, true);
-        movimento_diagonal_inferior_direita(X, Y, Tabuleiro, 1, true);
-        movimento_diagonal_inferior_esquerda(X, Y, Tabuleiro, 1, true);
-        movimento_diagonal_superior_direita(X, Y, Tabuleiro, 1, true);
-        movimento_diagonal_superior_esquerda(X, Y, Tabuleiro, 1, true)
+        movimento_diagonal_inferior_direita(X, Y, 0, 1, Tabuleiro, true);
+        movimento_diagonal_inferior_esquerda(X, Y, 0, 1, Tabuleiro, true);
+        movimento_diagonal_superior_direita(X, Y, 0, 1, Tabuleiro, true);
+        movimento_diagonal_superior_esquerda(X, Y, 0, 1, Tabuleiro, true)
     ),
     Resultado = true.
 
+% Descrição: Simula os movimentos do peão
+% Parâmetros: Coordenada X, Coordenada Y, Tabuleiro, Resultado
 peao(X, Y, Tabuleiro, Resultado) :-
 	(
-        movimento_diagonal_inferior_direita(X, Y, Tabuleiro, 1, true);
-        movimento_diagonal_inferior_esquerda(X, Y, Tabuleiro, 1, true)
+        movimento_diagonal_inferior_direita(X, Y, 0, 1, Tabuleiro, true);
+        movimento_diagonal_inferior_esquerda(X, Y, 0, 1, Tabuleiro, true)
     ),
     Resultado = true.
 
+% Descrição: Simula os movimentos da torre
+% Parâmetros: Coordenada X, Coordenada Y, Tabuleiro, Resultado
 torre(X, Y, Tabuleiro, Resultado) :-
 	(
     	movimento_horizontal_para_a_esquerda(X,Y,0,7,Tabuleiro,true);
@@ -351,6 +399,8 @@ torre(X, Y, Tabuleiro, Resultado) :-
     ),
     Resultado = true.
 
+% Descrição: Simula os movimentos do cavalo
+% Parâmetros: Coordenada X, Coordenada Y, Tabuleiro, Resultado
 cavalo(X, Y, Tabuleiro, Resultado) :-
 	(
     	movimento_l_cima(X,Y,Tabuleiro,true);
@@ -362,6 +412,9 @@ cavalo(X, Y, Tabuleiro, Resultado) :-
 
 
 /* PARTE 5: SIMULAR CADA PEÇA PRETA DO TABULEIRO E DEFINIR SE O REI BRANCO ESTÁ EM XEQUE OU NÃO */
+
+% Descrição: Verifica se o rei branco está em xeque por uma peça preta que esteja no tabuleiro
+% Parâmetros: Notação de Forsyth (Inserir Peças Pretas e Brancas com aspas simples)
 esta_em_xeque(NotacaoDeForsyth, Resultado) :-
     criar_tabuleiro(NotacaoDeForsyth, Tabuleiro),
     selecionar_pecas(Tabuleiro, Pecas),
@@ -378,3 +431,7 @@ esta_em_xeque_aux([[Peca, X, Y]|Resto], Tabuleiro, Resultado) :-
     	Peca == 'p', peao(X, Y, Tabuleiro, Resultado)
     );
     esta_em_xeque_aux(Resto, Tabuleiro, Resultado).
+
+
+
+
